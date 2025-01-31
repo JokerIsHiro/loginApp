@@ -51,10 +51,6 @@ class LoginController extends Controller
     public function index()
     {
         try {
-            if (!Auth::check()) {
-                throw new \Exception('No estas logeado');
-            }
-
             $users = DB::table('users')->get();
 
             if ($users->isEmpty()) {
@@ -65,6 +61,31 @@ class LoginController extends Controller
                 [
                     'message' => 'Aqui tiene los usuarios',
                     'users' => $users
+                ],
+                200
+            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function show($id)
+    {
+        try {
+            if (!Auth::check()) {
+                throw new \Exception('No estas logeado');
+            }
+
+            $user = DB::table("users")->find($id);
+
+            if (!$user) {
+                throw new \Exception("Usuario no encontrado");
+            }
+            return response()->json(
+                [
+                    'message' => 'Aqui tiene al usuario',
+                    'users' => $user
                 ],
                 200
             );
