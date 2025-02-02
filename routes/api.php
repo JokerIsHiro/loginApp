@@ -9,11 +9,9 @@ Route::get("/user", function (Request $request) {
 })->middleware("auth:sanctum");
 
 Route::post("/login", [LoginController::class, "login"]);
+Route::get("/users", [LoginController::class,"index"]);
 
-
-Route::prefix('/users')->group(function () {
-    Route::get('', [LoginController::class, 'index']);
-    Route::get('/{id}', [LoginController::class, 'show'])->middleware('auth:sanctum');
+Route::middleware("isLogged")->group(function () {
+    Route::get("/user/{id}", [LoginController::class,"show"]);
+    Route::post('/logout', [LoginController::class, 'logout']);
 });
-
-Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');

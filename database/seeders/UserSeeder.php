@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             DB::table('users')->insert([
                 "name" => fake()->name(),
-                "password" => fake()->password(),
+                "password" => bcrypt(fake()->password()),
             ]);
         }
     }

@@ -3,49 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'password' => 'required|string',
+        $params = $request->validate([
+            "name" => "required",
+            "password" => "required",
         ]);
 
-        if (Auth::check()) {
-            return response()->json(
-                [
-                    'message' => 'Ya esta logeado'
-                ],
-                200
-            );
-        }
+        if (Auth::attempt($params)) {
 
-        $user = User::where('name', $request->name)->first();
+            $user = Auth::user();
 
-        if ($user && $user->password === $request->password) {
-
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken("auth_token")->plainTextToken;
 
             return response()->json([
-                'message' => 'Inicio de sesion con exito',
-                'token' => $token,
+                "token" => $token,
+                "user" => $user
             ]);
         }
-        return response()->json(['message' => 'Credenciales incorrectas.'], 401);
-    }
 
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Sesión cerrada con éxito.']);
+        return response()->json(
+            [
+                "error" => "Credenciales invalidas",
+                'credenciales' => $params
+            ],
+            401
+        );
     }
 
     public function index()
@@ -70,10 +59,11 @@ class LoginController extends Controller
             ], 500);
         }
     }
-    public function show($id)
-    {
+    public function show(Request $request, $id)
+    {  
+        $loggedUser = $request->user(); 
         try {
-            if (!Auth::check()) {
+            if (!$loggedUser) {
                 throw new \Exception('No estas logeado');
             }
 
@@ -94,5 +84,19 @@ class LoginController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function logout(Request $request){
+        $user = $request->user();
+
+        if($user){
+            $user->currentAccesToken()->delete();
+
+            return response()->json([
+                'message' => 'Sesion cerrada con exito'
+            ]);
+        }
+        return response()->json([
+            'message' => 'No autorizado'
+        ], 401);
     }
 }

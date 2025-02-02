@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias(['isLogged'=> \App\Http\Middleware\ComprobarLogin::class,]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
