@@ -4,55 +4,16 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-<<<<<<< Updated upstream:app/Http/Controllers/LoginController.php
-=======
 use Validator;
->>>>>>> Stashed changes:app/Http/Controllers/API/LoginController.php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
 
     public function register(Request $request)
     {
-<<<<<<< Updated upstream:app/Http/Controllers/LoginController.php
-        $request->validate([
-            'name' => 'required',
-            'password' => 'required|string',
-        ]);
-
-        if (Auth::check()) {
-            return response()->json(
-                [
-                    'message' => 'Ya esta logeado'
-                ],
-                200
-            );
-        }
-
-        $user = User::where('name', $request->name)->first();
-
-        if ($user && $user->password === $request->password) {
-
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return response()->json([
-                'message' => 'Inicio de sesion con exito',
-                'token' => $token,
-            ]);
-        }
-        return response()->json(['message' => 'Credenciales incorrectas.'], 401);
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Sesión cerrada con éxito.']);
-=======
         $validator = Validator::make($request->all(), [
             "name" => "required",
             "email" => "required|email",
@@ -111,7 +72,6 @@ class LoginController extends Controller
             ],
             401
         );
->>>>>>> Stashed changes:app/Http/Controllers/API/LoginController.php
     }
 
     public function index()
@@ -136,16 +96,11 @@ class LoginController extends Controller
             ], 500);
         }
     }
-<<<<<<< Updated upstream:app/Http/Controllers/LoginController.php
-    public function show($id)
-    {
-=======
     public function show(Request $request, $id)
     {
         $loggedUser = $request->user();
->>>>>>> Stashed changes:app/Http/Controllers/API/LoginController.php
         try {
-            if (!Auth::check()) {
+            if (!$loggedUser) {
                 throw new \Exception('No estas logeado');
             }
 
@@ -167,16 +122,13 @@ class LoginController extends Controller
             ], 500);
         }
     }
-<<<<<<< Updated upstream:app/Http/Controllers/LoginController.php
-=======
     public function logout(Request $request)
     {
 
         $user = $request->user();
 
         if ($user) {
-
-            $user->token()->delete();
+            $user->tokens()->delete();
 
             return response()->json([
                 'message' => 'Sesion cerrada con exito',
@@ -186,5 +138,4 @@ class LoginController extends Controller
             'message' => 'No autorizado'
         ], 401);
     }
->>>>>>> Stashed changes:app/Http/Controllers/API/LoginController.php
 }

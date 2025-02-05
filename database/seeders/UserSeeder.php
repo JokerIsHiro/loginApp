@@ -15,16 +15,12 @@ class UserSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {        
+    {
         for ($i = 0; $i < 10; $i++) {
             DB::table('users')->insert([
                 "name" => fake()->name(),
-<<<<<<< Updated upstream
-                "password" => fake()->password(),
-=======
-                "email"=> fake()->email(),
+                "email" => fake()->email(),
                 "password" => Hash::make("12345as."),
->>>>>>> Stashed changes
             ]);
         }
     }
