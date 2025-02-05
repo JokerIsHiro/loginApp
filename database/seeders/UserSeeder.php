@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -14,16 +15,16 @@ class UserSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
-        User::factory()->create([
-            "name"=> "Juan",
-            "password" => bcrypt("12345as/"),
-        ]);
-        
+    {        
         for ($i = 0; $i < 10; $i++) {
             DB::table('users')->insert([
                 "name" => fake()->name(),
+<<<<<<< Updated upstream
                 "password" => fake()->password(),
+=======
+                "email"=> fake()->email(),
+                "password" => Hash::make("12345as."),
+>>>>>>> Stashed changes
             ]);
         }
     }
